@@ -69,7 +69,7 @@ jobs:
       - run:
           name: bring up S3
           command: |
-            aws cloudformation deploy --template-file bucket.yml --stack-name stack"${CIRCLE_WORKFLOW_ID:0:7}" --parameter-overrides PipelineID=stack"${CIRCLE_WORKFLOW_ID:0:7}" --region=us-east-1
+            aws cloudformation deploy --template-file bucket.yml --stack-name "stack${CIRCLE_WORKFLOW_ID:0:7}" --parameter-overrides PipelineID="stack${CIRCLE_WORKFLOW_ID:0:7}" --region=us-east-1
 
   get_last_deployment_id:
     docker:
