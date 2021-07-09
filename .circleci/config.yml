@@ -163,8 +163,12 @@ workflows:
       #- test:
       #    requires:
       #      - build
-      - create_infrastructure
-      - destroy_infrastructure:
+      #- create_infrastructure
+      - create_and_deploy_front_end
+      - get_last_deployment_id
           requires:
-            create_infrastructure
+            create_and_deploy_front_end
+      - destroy_infrastructure
+          requires:
+            get_last_deployment_id
 
