@@ -66,13 +66,11 @@ jobs:
           command: |
             export DEBIAN_FRONTEND=noninteractive
             apt-get update && apt-get install -yq curl unzip awscli ansible
-      -run:
+
+      - run:
           name: bring up S3
           command: |
-            aws cloudformation deploy \
-          --template-file bucket.yml \
-          --stack-name "${CIRCLE_WORKFLOW_ID:0:7}" \
-          --parameter-overrides PipelineID="${CIRCLE_WORKFLOW_ID:0:7}"
+            aws cloudformation deploy --template-file bucket.yml --stack-name "${CIRCLE_WORKFLOW_ID:0:7}" --parameter-overrides PipelineID="${CIRCLE_WORKFLOW_ID:0:7}"
 
   get_last_deployment_id:
     docker:
@@ -165,10 +163,10 @@ workflows:
       #      - build
       #- create_infrastructure
       - create_and_deploy_front_end
-      - get_last_deployment_id
+      - get_last_deployment_id:
           requires:
-            create_and_deploy_front_end
-      - destroy_infrastructure
+            - create_and_deploy_front_end
+      - destroy_infrastructure:
           requires:
-            get_last_deployment_id
+            - get_last_deployment_id
 
