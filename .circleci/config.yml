@@ -166,7 +166,7 @@ workflows:
       - get_last_deployment_id:
           requires:
             - create_and_deploy_front_end
-      - destroy_infrastructure:
+      - clean_up_old_front_end:
           requires:
             - get_last_deployment_id
 
