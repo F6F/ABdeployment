@@ -49,8 +49,8 @@ jobs:
           command: |
             aws cloudformation deploy \
             --template-file cloudfront.yml \
-            --stack-name tobiepicdeployment3 \
-            --parameter-overrides PipelineID="${CIRCLE_WORKFLOW_ID}"
+            --stack-name production-distro \
+            --parameter-overrides PipelineID="stack${CIRCLE_WORKFLOW_ID}"
             #aws cloudformation create-stack --stack-name infraStack --template-body file://infra/template.yml --capabilities "CAPABILITY_IAM" "CAPABILITY_NAMED_IAM" --region=us-east-1
       
       - add_ssh_keys:
@@ -95,7 +95,7 @@ jobs:
       - persist_to_workspace:
           root: .
           paths:
-            - *
+            - ./lastID.txt
 
   clean_up_old_front_end:
     docker:
@@ -113,7 +113,7 @@ jobs:
           name: clean old frontend 
           command: |
             cat lastID.txt
-            aws s3 rm $(cat lastID.txt) --recursive
+            aws s3 rm s3://$(cat lastID.txt) --recursive
             aws cloudformation delete-stack --stack-name $(cat lastID.txt)
 
 
@@ -162,11 +162,14 @@ workflows:
       #    requires:
       #      - build
       #- create_infrastructure
-      - create_and_deploy_front_end
-      - get_last_deployment_id:
+      - get_last_deployment_id
+      - create_and_deploy_front_end:
+          requires:
+            - get_last_deployment_id
+      - creapromote_to_production:
           requires:
             - create_and_deploy_front_end
       - clean_up_old_front_end:
           requires:
-            - get_last_deployment_id
+            - creapromote_to_production
 
