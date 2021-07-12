@@ -95,7 +95,7 @@ jobs:
       - persist_to_workspace:
           root: .
           paths:
-            - lastID.txt
+            - *
 
   clean_up_old_front_end:
     docker:
