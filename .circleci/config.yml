@@ -50,7 +50,7 @@ jobs:
             aws cloudformation deploy \
             --template-file cloudfront.yml \
             --stack-name production-distro \
-            --parameter-overrides PipelineID="stack${CIRCLE_WORKFLOW_ID}"
+            --parameter-overrides PipelineID="stack${CIRCLE_WORKFLOW_ID:0:7}"
             #aws cloudformation create-stack --stack-name infraStack --template-body file://infra/template.yml --capabilities "CAPABILITY_IAM" "CAPABILITY_NAMED_IAM" --region=us-east-1
       
       - add_ssh_keys:
